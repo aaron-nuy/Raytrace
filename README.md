@@ -5,7 +5,7 @@ My attempt to hack in a raytracer. This is only intended to be a demo, no peekin
 # Controls
 
  * WASD
- * Space/Control/Shift
+ * Space/Control
  * Left mouse to select objects
  * F to switch between edit/movement modes
  
