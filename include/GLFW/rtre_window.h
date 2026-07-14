@@ -1,5 +1,5 @@
 #pragma once
-#include "glfw3.h"
+#include <GLFW/glfw3.h>
 #include <string>
 
 #define ar_KeyHandler(HandlerName) void HandlerName (GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -13,97 +13,120 @@
 
 
 namespace rtre {
-	
-	struct WSize {
-		int height;
-		int width;
+    struct WSize {
+        int height;
+        int width;
 
-		WSize(int width, int height);
-	};
-	struct WCoords {
-		double x;
-		double y;
+        WSize(int width, int height);
+    };
 
-		WCoords(double x, double y);
+    struct WCoords {
+        double x;
+        double y;
 
-	};
+        WCoords(double x, double y);
+    };
 
-	typedef GLFWmonitor* WMonitor;
+    typedef GLFWmonitor *WMonitor;
 
-	class Window {
+    class Window {
+        GLFWwindow *m_Window;
+        int m_isFullscreen;
 
-		GLFWwindow* m_Window;
-		int m_isFullscreen;
-	public:
+    public:
+        Window();
 
+        Window(Window &) = delete;
 
-		Window();
-		Window(Window& ) = delete;
-		/*
+        /*
 			if primary monitor is not specified, it initializes to null
 			if primary monitor is specified with getPrimaryMonitor, window launchs in fullscreen mode
 		*/
-		Window(int width, int height, const std::string& title, WMonitor primaryMonitor = NULL);
-		/*
+        Window(int width, int height, const std::string &title, WMonitor primaryMonitor = NULL);
+
+        /*
 		if primaryMonir is not specified, it initializes to null
 		if primary monitor is specified with getPrimaryMonitor, window launchs in fullscreen mode
 		*/
-		Window(WSize size, const std::string& title, WMonitor primaryMonitor = NULL);
-		~Window();
+        Window(WSize size, const std::string &title, WMonitor primaryMonitor = NULL);
 
-		GLFWwindow* getWindow() { return m_Window; }
+        ~Window();
 
-		void destroyWindow();
+        GLFWwindow *getWindow() { return m_Window; }
 
-		static int init();
-		static void terminate();
-		static void initHint(int hint, int value);
-		static void pollEvents();
+        void destroyWindow();
 
-		static WMonitor getPrimaryMonitor();
+        static int init();
 
-		void makeContextCurrent();
-		void detachContext();
+        static void terminate();
 
-		void swapInterval(int value);
-		void swapBuffers();
+        static void initHint(int hint, int value);
 
-		double getTime();
+        static void pollEvents();
 
-		int shouldClose();
-		void setShouldClose(int value);
+        static WMonitor getPrimaryMonitor();
 
-		int isKeyPressed(int key);
-		int isKeyReleased(int key);
-		int isMousePressed(int button);
-		int isMouseReleased(int button);
+        void makeContextCurrent();
 
-		int isClickingLeft() {
-			return (glfwGetInputMode(m_Window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) && isMousePressed(GLFW_MOUSE_BUTTON_1);
-		}
+        void detachContext();
+
+        void swapInterval(int value);
+
+        void swapBuffers();
+
+        double getTime();
+
+        int shouldClose();
+
+        void setShouldClose(int value);
+
+        int isKeyPressed(int key);
+
+        int isKeyReleased(int key);
+
+        int isMousePressed(int button);
+
+        int isMouseReleased(int button);
+
+        int isClickingLeft()
+        {
+            return (glfwGetInputMode(m_Window, GLFW_CURSOR) == GLFW_CURSOR_NORMAL) && isMousePressed(
+                       GLFW_MOUSE_BUTTON_1);
+        }
 
 
-		GLFWkeyfun setKeyCallback(GLFWkeyfun callback_handler);
-		GLFWmousebuttonfun setMouseButtonCallback(GLFWmousebuttonfun callback_handler);
+        GLFWkeyfun setKeyCallback(GLFWkeyfun callback_handler);
 
-		WSize getWindowSize();
-		void setWindowSize(WSize size);
-		void setWindowSize(int width, int height);
+        GLFWmousebuttonfun setMouseButtonCallback(GLFWmousebuttonfun callback_handler);
 
-		WCoords getCursorPosition();
-		void setCursorPosition(double x, double y);
-		void setCursorPosition(WCoords coords);
+        WSize getWindowSize();
 
-		WCoords getWindowPosition();
-		void setWindowPosition(WCoords coords);
-		void setWindowPosition(int x, int y);
+        void setWindowSize(WSize size);
 
-		void setInputMode(int mode, int value);
-		void setTitle(const std::string& title);
+        void setWindowSize(int width, int height);
 
-		int isFullScreen();
-		void setFullScreen();
-		void setWindowed(int height, int width, int positionX, int positionY);
-		void setWindowed(WSize size, WCoords coords);
-	};
+        WCoords getCursorPosition();
+
+        void setCursorPosition(double x, double y);
+
+        void setCursorPosition(WCoords coords);
+
+        WCoords getWindowPosition();
+
+        void setWindowPosition(WCoords coords);
+
+        void setWindowPosition(int x, int y);
+
+        void setInputMode(int mode, int value);
+
+        void setTitle(const std::string &title);
+
+        int isFullScreen();
+
+        void setFullScreen();
+
+        void setWindowed(int height, int width, int positionX, int positionY);
+
+        void setWindowed(WSize size, WCoords coords);
+    };
 }

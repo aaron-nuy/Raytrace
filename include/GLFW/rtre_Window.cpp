@@ -1,36 +1,34 @@
 #include "rtre_window.h"
 
-rtre::Window::Window() 
-	:
-	m_Window(glfwCreateWindow(300, 300, "Window", NULL, NULL))
+rtre::Window::Window()
+	: m_Window(glfwCreateWindow(300, 300, "Window", NULL, NULL))
 {
 }
 
-rtre::Window::Window(int width, int height, const std::string& title, WMonitor primaryMonitor)
-	:
-	m_Window(glfwCreateWindow(width, height, title.c_str(), primaryMonitor, NULL))
-	
+rtre::Window::Window(int width, int height, const std::string &title, WMonitor primaryMonitor)
+	: m_Window(glfwCreateWindow(width, height, title.c_str(), primaryMonitor, NULL))
+
 {
-	if (primaryMonitor == NULL) {
+	if (primaryMonitor == NULL)
+	{
 		m_isFullscreen = 0;
-	}
-	else {
+	} else
+	{
 		m_isFullscreen = 1;
 	}
 }
 
-rtre::Window::Window(WSize size, const std::string& title, WMonitor primaryMonitor)
-	:
-	m_Window(glfwCreateWindow(size.width, size.height, title.c_str(), primaryMonitor, NULL))
+rtre::Window::Window(WSize size, const std::string &title, WMonitor primaryMonitor)
+	: m_Window(glfwCreateWindow(size.width, size.height, title.c_str(), primaryMonitor, NULL))
 {
-	if (primaryMonitor == NULL) {
+	if (primaryMonitor == NULL)
+	{
 		m_isFullscreen = 0;
-	}
-	else {
+	} else
+	{
 		m_isFullscreen = 1;
 	}
 }
-
 
 
 rtre::Window::~Window()
@@ -69,7 +67,7 @@ rtre::WMonitor rtre::Window::getPrimaryMonitor()
 	return glfwGetPrimaryMonitor();
 }
 
-void rtre::Window::setTitle(const std::string& title)
+void rtre::Window::setTitle(const std::string &title)
 {
 	glfwSetWindowTitle(m_Window, title.c_str());
 }
@@ -81,12 +79,12 @@ int rtre::Window::isFullScreen()
 
 void rtre::Window::setFullScreen()
 {
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 	glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
 	m_isFullscreen = 1;
 }
 
-void rtre::Window::setWindowed(int width, int height, int positionX,int positionY)
+void rtre::Window::setWindowed(int width, int height, int positionX, int positionY)
 {
 	glfwSetWindowMonitor(m_Window, NULL, positionX, positionY, width, height, GLFW_DONT_CARE);
 	m_isFullscreen = 0;
@@ -135,14 +133,13 @@ void rtre::Window::setShouldClose(int value)
 
 int rtre::Window::isKeyPressed(int key)
 {
-	return glfwGetKey(m_Window,key) == GLFW_PRESS;
+	return glfwGetKey(m_Window, key) == GLFW_PRESS;
 }
 
 int rtre::Window::isKeyReleased(int key)
 {
 	return glfwGetKey(m_Window, key) == GLFW_RELEASE;;
 }
-
 
 
 int rtre::Window::isMousePressed(int button)
@@ -159,7 +156,7 @@ rtre::WSize rtre::Window::getWindowSize()
 {
 	int width, height;
 	glfwGetWindowSize(m_Window, &width, &height);
-	return WSize(width,height);
+	return WSize(width, height);
 }
 
 void rtre::Window::setWindowSize(rtre::WSize size)
@@ -175,7 +172,7 @@ void rtre::Window::setWindowSize(int width, int height)
 rtre::WCoords rtre::Window::getCursorPosition()
 {
 	double x, y;
-	glfwGetCursorPos(m_Window,&x,&y);
+	glfwGetCursorPos(m_Window, &x, &y);
 	return WCoords(x, y);
 }
 
@@ -208,7 +205,7 @@ rtre::WCoords rtre::Window::getWindowPosition()
 {
 	int x, y;
 	glfwGetWindowPos(m_Window, &x, &y);
-	return WCoords(x,y);
+	return WCoords(x, y);
 }
 
 void rtre::Window::setWindowPosition(rtre::WCoords coords)
