@@ -1,11 +1,9 @@
-#pragma once
 #include <vector>
 #include <filesystem>
-#include <Windows.h>
 #include <chrono>
 #include <thread>
 #include "rtre.h"
-#include "GLFW/rtre_Window.h"
+#include "GLFW/rtre_window.h"
 #include "engine_movement/controller.h"
 
 #define LOG(x) std::cout << x << "\n"
@@ -20,7 +18,7 @@ float getTime() {
 	return (float)duration_cast<milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 }
 
-GLfloat random() {
+GLfloat my_random() {
 	return rand() / 32767.0;
 }
 
@@ -115,14 +113,14 @@ int main()
 	bool show_another_window = true;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-	std::shared_ptr<rtre::RenderShader> shader = std::make_shared<rtre::RenderShader>("engine_resources\\vert.vert", "engine_resources\\frag.frag", "");
+	std::shared_ptr<rtre::RenderShader> shader = std::make_shared<rtre::RenderShader>("engine_resources/vert.vert", "engine_resources/frag.frag", "");
 	rtre::Quad screen = rtre::Quad(shader);
 	GLfloat fov = 75.f;
 
 	
 	float stime = getTime();
 	
-	Hitdata selectedShape = {-1,-1,ShapeType::eNONE};
+	Hitdata selectedShape = {-1.0f, 0xffffffff, ShapeType::eNONE};
 
 	// Uniforms
 	GLfloat aspectRatio;
@@ -148,14 +146,14 @@ int main()
 	for (int i = 0; i < 10; i++) {
 		rtre::sphereList.emplace_back(
 			new rtre::Sphere(
-				glm::vec3(random()*10, random() * 10, random() * 10),
-				random()*2,
+				glm::vec3(my_random()*10, my_random() * 10, my_random() * 10),
+				my_random()*2,
 				rtre::Material(
-					glm::vec3(random(), random(), random()),
-					random(),
-					random(),
+					glm::vec3(my_random(), my_random(), my_random()),
+					my_random(),
+					my_random(),
 					0.0f,
-					random()
+					my_random()
 				)
 			)
 		);
@@ -165,14 +163,14 @@ int main()
 	for (int i = 0; i < 10; i++) {
 		rtre::boxList.emplace_back(
 			new rtre::Box(
-				glm::vec3(random()*10, random() * 10, random() * 10),
-				glm::vec3(random() * 2, random() * 2, random() * 2),
+				glm::vec3(my_random()*10, my_random() * 10, my_random() * 10),
+				glm::vec3(my_random() * 2, my_random() * 2, my_random() * 2),
 				rtre::Material(
-					glm::vec3(random(), random(), random()),
-					random(),
-					random(),
+					glm::vec3(my_random(), my_random(), my_random()),
+					my_random(),
+					my_random(),
 					0.0f,
-					random()
+					my_random()
 				)
 			)
 		);
@@ -188,7 +186,7 @@ int main()
 	glGenFramebuffers(1, &pathTracerFBO);
 	
 
-	std::shared_ptr<rtre::RenderShader> mshader = std::make_shared<rtre::RenderShader>("engine_resources\\main.vert", "engine_resources\\main.frag", "");
+	std::shared_ptr<rtre::RenderShader> mshader = std::make_shared<rtre::RenderShader>("engine_resources/main.vert", "engine_resources/main.frag", "");
 	rtre::Quad secondscreen = rtre::Quad(mshader);
 
 	float frameCounter = 1;
@@ -302,7 +300,7 @@ int main()
 			rtre::Ray ray = rtre::Ray(rayDirection, rtre::camera.position());
 
 
-			Hitdata data = { -1, -1, ShapeType::eNONE };
+			Hitdata data = { -1.0f, 0xffffffff, ShapeType::eNONE };
 			for (uint32_t i = 0; i < rtre::sphereList.size(); i++) {
 				data = mymin(data, Hitdata{ rtre::sphereList[i]->intersect(ray),i,ShapeType::eSphere });
 			}

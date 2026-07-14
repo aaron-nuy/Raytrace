@@ -1,5 +1,4 @@
-#pragma once
-#include "rtre_Window.h"
+#include "rtre_window.h"
 
 rtre::Window::Window() 
 	:

@@ -72,7 +72,7 @@ namespace rtre {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		}
 		inline void unbind() {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 		inline void free() {
 			glDeleteBuffers(1, &m_ID);
@@ -138,7 +138,7 @@ namespace rtre {
 			glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 		}
 		inline void unbind() {
-			glBindBuffer(GL_ARRAY_BUFFER, NULL);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
 		inline void free() {
 			glDeleteBuffers(1, &m_ID);

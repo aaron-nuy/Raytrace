@@ -42,9 +42,9 @@ namespace rtre {
 
 
 
-		const vec2& right() const { return -glm::normalize(glm::cross(orientation(), m_UpDirection)); }
+		vec3 right() const { return -glm::normalize(glm::cross(orientation(), m_UpDirection)); }
 		const vec3& speed() const { return m_Speed; }
-		const vec3& orientation() const { return glm::normalize(m_Orientation); }
+		vec3 orientation() const { return glm::normalize(m_Orientation); }
 		const vec3& position() const { return m_Position; }
 		const vec3& upDirection() const { return m_UpDirection; }
 		void setSpeed(const vec3& pspeed) { m_Speed = pspeed; }

@@ -3,12 +3,13 @@
 #include <iostream>
 #include <algorithm>
 #include <set>
+#include <stdexcept>
 
-#include "engine_abstractions/shader.h"
-#include "engine_abstractions/sampler.h"
+#include "engine_abstractions/Shader.h"
+#include "engine_abstractions/Sampler.h"
 #include "engine_abstractions/dtypes.h"
 #include "engine_rendering/camera.h"
-#include "GLFW/rtre_Window.h"
+#include "GLFW/rtre_window.h"
 
 namespace rtre {
 	
@@ -23,12 +24,12 @@ namespace rtre {
 	static std::vector<rtre::Box*> boxList;
 
 	std::array<std::string, 6> cubemap = {
-		"skybox\\right.png",
-		"skybox\\left.png",
-		"skybox\\up.png",
-		"skybox\\down.png",
-		"skybox\\forward.png",
-		"skybox\\back.png"
+		"skybox/right.png",
+		"skybox/left.png",
+		"skybox/up.png",
+		"skybox/down.png",
+		"skybox/forward.png",
+		"skybox/back.png"
 	};
 
 	void setViewport(GLuint vWidth, GLuint vHeight) {
@@ -51,7 +52,7 @@ namespace rtre {
 
 
 		if (!gladLoadGL()) {
-			throw std::exception("Could not load glad.\n");
+			throw std::runtime_error("Could not load glad.\n");
 		}
 
 		setViewport(viewportWidth, viewportHeight);
