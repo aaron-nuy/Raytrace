@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "../engine_abstractions/sampler.h"
-#include "../engine_abstractions/shader.h"
+#include "../engine_abstractions/Sampler.h"
+#include "../engine_abstractions/Shader.h"
 #include "../rtre_base.h"
 #include "../engine_abstractions/buffer_objects.h"
 

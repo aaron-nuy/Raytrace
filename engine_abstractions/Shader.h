@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <cerrno>
 #include <cstring>
+#include <stdexcept>
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -38,7 +39,7 @@ namespace rtre {
 		}
 		else {
 			std::string err = std::string("Couldn't load file ") + std::string(filename) + " .\n";
-			throw(std::exception(err.c_str()));	
+			throw(std::runtime_error(err.c_str()));	
 		}
 	}
 

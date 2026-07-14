@@ -1,6 +1,6 @@
 #pragma once
 #include <chrono>
-#include "GLFW/rtre_Window.h"
+#include "GLFW/rtre_window.h"
 #include "../engine_rendering/camera.h"
 #include "../rtre_base.h" 
 

@@ -1,9 +1,10 @@
 #pragma once
 #include <exception>
 #include <array>
+#include <stdexcept>
 #include "glad/glad.h"
 #include "dependencies/stb_image.h"
-#include "shader.h"
+#include "Shader.h"
 
 namespace rtre {
 
@@ -80,7 +81,7 @@ namespace rtre {
 				{
 					stbi_image_free(bytes);
 					glBindTexture(GL_TEXTURE_2D, 0);
-					throw std::exception("Automatic Texture type recognition failed\n");
+					throw std::runtime_error("Automatic Texture type recognition failed\n");
 					break;
 				}
 				}
@@ -94,7 +95,7 @@ namespace rtre {
 				glBindTexture(GL_TEXTURE_2D, 0);
 				std::string exceptionMessage = "Failed to load texture: " + std::string(image);
 				stbi_image_free(bytes);
-				throw std::exception(exceptionMessage.c_str());
+				throw std::runtime_error(exceptionMessage.c_str());
 
 			}
 		}
@@ -134,7 +135,7 @@ namespace rtre {
 				{
 					stbi_image_free(bytes);
 					glBindTexture(GL_TEXTURE_2D, 0);
-					throw std::exception("Automatic Texture type recognition failed\n");
+					throw std::runtime_error("Automatic Texture type recognition failed\n");
 					break;
 				}
 				}
@@ -148,7 +149,7 @@ namespace rtre {
 				glBindTexture(GL_TEXTURE_2D, 0);
 				std::string exceptionMessage = "Failed to load texture: " + std::string(image);
 				stbi_image_free(bytes);
-				throw std::exception(exceptionMessage.c_str());
+				throw std::runtime_error(exceptionMessage.c_str());
 
 			}
 		}
@@ -190,7 +191,7 @@ namespace rtre {
 					glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 					std::string exceptionMessage = "Failed to load texture: " + mapsides[i] + "\n";
 					stbi_image_free(bytes);
-					throw std::exception(exceptionMessage.c_str());
+					throw std::runtime_error(exceptionMessage.c_str());
 				}
 
 				switch (numColCh) {
