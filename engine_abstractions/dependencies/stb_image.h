@@ -1330,7 +1330,8 @@ static stbi__uint16 *stbi__load_and_postprocess_16bit(stbi__context *s, int *x, 
 #if !defined(STBI_NO_HDR) && !defined(STBI_NO_LINEAR)
 static void stbi__float_postprocess(float *result, int *x, int *y, int *comp, int req_comp)
 {
-    if (stbi__vertically_flip_on_load &&result 
+    if (stbi__vertically_flip_on_load &&result
+    
     !=
     NULL
     )
@@ -1550,6 +1551,7 @@ STBIDEF float *stbi_loadf_from_file(FILE *f, int *x, int *y, int *comp, int req_
 STBIDEF int stbi_is_hdr_from_memory(stbi_uc const *buffer, int len)
 {
 
+
 #ifndef STBI_NO_HDR
 stbi__context s;
 stbi__start_mem (&s, buffer, len);
@@ -1577,6 +1579,7 @@ STBIDEF int stbi_is_hdr(char const *filename)
 STBIDEF int stbi_is_hdr_from_file(FILE *f)
 {
 
+
 #ifndef STBI_NO_HDR
 long pos = ftell(f);
 int res;
@@ -1594,6 +1597,7 @@ STBI_NOTUSED (f);
 
 STBIDEF int stbi_is_hdr_from_callbacks(stbi_io_callbacks const *clbk, void *user)
 {
+
 
 #ifndef STBI_NO_HDR
 stbi__context s;
@@ -3223,7 +3227,8 @@ static int stbi__parse_entropy_coded_data(stbi__jpeg *z)
                 {
                     int ha = z->img_comp[n].ha;
                     if (!stbi__jpeg_decode_block(z, data, z->huff_dc + z->img_comp[n].hd, z->huff_ac + ha,
-                                                 z->fast_ac[ha], n, z->dequant[z->img_comp[n].tq])) return 0;
+                                                 z->fast_ac[ha], n, z->dequant[z->img_comp[n].tq]))
+                        return 0;
                     z->idct_block_kernel(z->img_comp[n].data + z->img_comp[n].w2 * j * 8 + i * 8, z->img_comp[n].w2,
                                          data);
                     // every data block is an MCU, so countdown the restart interval
@@ -3262,7 +3267,8 @@ static int stbi__parse_entropy_coded_data(stbi__jpeg *z)
                                 int ha = z->img_comp[n].ha;
                                 if (!stbi__jpeg_decode_block(z, data, z->huff_dc + z->img_comp[n].hd, z->huff_ac + ha,
                                                              z->fast_ac[ha], n,
-                                                             z->dequant[z->img_comp[n].tq])) return 0;
+                                                             z->dequant[z->img_comp[n].tq]))
+                                    return 0;
                                 z->idct_block_kernel(z->img_comp[n].data + z->img_comp[n].w2 * y2 + x2,
                                                      z->img_comp[n].w2, data);
                             }
@@ -3511,8 +3517,9 @@ static int stbi__process_scan_header(stbi__jpeg *z)
     int i;
     int Ls = stbi__get16be(z->s);
     z->scan_n = stbi__get8(z->s);
-    if (z->scan_n < 1 || z->scan_n > 4 || z->scan_n > (int) z->s->img_n) return stbi__err(
-        "bad SOS component count", "Corrupt JPEG");
+    if (z->scan_n < 1 || z->scan_n > 4 || z->scan_n > (int) z->s->img_n)
+        return stbi__err(
+            "bad SOS component count", "Corrupt JPEG");
     if (Ls != 6 + 2 * z->scan_n) return stbi__err("bad SOS len", "Corrupt JPEG");
     for (i = 0; i < z->scan_n; ++i)
     {
@@ -3622,8 +3629,9 @@ static int stbi__process_frame_header(stbi__jpeg *z, int scan)
 
     if (scan != STBI__SCAN_load) return 1;
 
-    if (!stbi__mad3sizes_valid(s->img_x, s->img_y, s->img_n, 0)) return stbi__err(
-        "too large", "Image too large to decode");
+    if (!stbi__mad3sizes_valid(s->img_x, s->img_y, s->img_n, 0))
+        return stbi__err(
+            "too large", "Image too large to decode");
 
     for (i = 0; i < s->img_n; ++i)
     {
@@ -5663,8 +5671,9 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
                 if (s->img_y > STBI_MAX_DIMENSIONS) return stbi__err("too large", "Very large image (corrupt?)");
                 if (s->img_x > STBI_MAX_DIMENSIONS) return stbi__err("too large", "Very large image (corrupt?)");
                 z->depth = stbi__get8(s);
-                if (z->depth != 1 && z->depth != 2 && z->depth != 4 && z->depth != 8 && z->depth != 16) return
-                        stbi__err("1/2/4/8/16-bit only", "PNG not supported: 1/2/4/8/16-bit only");
+                if (z->depth != 1 && z->depth != 2 && z->depth != 4 && z->depth != 8 && z->depth != 16)
+                    return
+                            stbi__err("1/2/4/8/16-bit only", "PNG not supported: 1/2/4/8/16-bit only");
                 color = stbi__get8(s);
                 if (color > 6) return stbi__err("bad ctype", "Corrupt PNG");
                 if (color == 3 && z->depth == 16) return stbi__err("bad ctype", "Corrupt PNG");
@@ -5680,8 +5689,9 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
                 if (!pal_img_n)
                 {
                     s->img_n = (color & 2 ? 3 : 1) + (color & 4 ? 1 : 0);
-                    if ((1 << 30) / s->img_x / s->img_n < s->img_y) return stbi__err(
-                        "too large", "Image too large to decode");
+                    if ((1 << 30) / s->img_x / s->img_n < s->img_y)
+                        return stbi__err(
+                            "too large", "Image too large to decode");
                     if (scan == STBI__SCAN_header) return 1;
                 } else
                 {
@@ -5786,8 +5796,9 @@ static int stbi__parse_png_file(stbi__png *z, int scan, int req_comp)
                     s->img_out_n = s->img_n + 1;
                 else
                     s->img_out_n = s->img_n;
-                if (!stbi__create_png_image(z, z->expanded, raw_len, s->img_out_n, z->depth, color, interlace)) return
-                        0;
+                if (!stbi__create_png_image(z, z->expanded, raw_len, s->img_out_n, z->depth, color, interlace))
+                    return
+                            0;
                 if (has_trans)
                 {
                     if (z->depth == 16)
@@ -6069,8 +6080,9 @@ static void *stbi__bmp_parse_header(stbi__context *s, stbi__bmp_data *info)
 
     if (info->offset < 0) return stbi__errpuc("bad BMP", "bad BMP");
 
-    if (hsz != 12 && hsz != 40 && hsz != 56 && hsz != 108 && hsz != 124) return stbi__errpuc(
-        "unknown BMP", "BMP type not supported: unknown");
+    if (hsz != 12 && hsz != 40 && hsz != 56 && hsz != 108 && hsz != 124)
+        return stbi__errpuc(
+            "unknown BMP", "BMP type not supported: unknown");
     if (hsz == 12)
     {
         s->img_x = stbi__get16le(s);
@@ -8482,6 +8494,7 @@ static int stbi__pnm_is16(stbi__context *s)
 static int stbi__info_main(stbi__context *s, int *x, int *y, int *comp)
 {
 
+
 #ifndef STBI_NO_JPEG
 if (stbi__jpeg_info(s, x, y, comp)) return 1;
 #endif
@@ -8524,6 +8537,7 @@ return stbi__err ("unknown image type", "Image not of any known type, or corrupt
 
 static int stbi__is_16_main(stbi__context *s)
 {
+
 
 #ifndef STBI_NO_PNG
 if (stbi__png_is16(s))  return 1;

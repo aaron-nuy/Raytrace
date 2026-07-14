@@ -16,9 +16,13 @@ set(CMAKE_C_FLAGS_DEBUG "-O0 -g")
 set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 find_package(OpenGL REQUIRED)
-find_package(glfw3 QUIET)
+find_package(glfw3 REQUIRED)
+find_package(assimp REQUIRED)
 if (NOT glfw3_FOUND)
     find_package(glfw REQUIRED)
+endif ()
+if (NOT assimp_FOUND)
+    find_package(assimp REQUIRED)
 endif ()
 find_package(glm CONFIG REQUIRED)
 
@@ -58,6 +62,10 @@ elseif (TARGET glfw3)
     target_link_libraries(Raytrace glfw3)
 else ()
     target_link_libraries(Raytrace ${GLFW_LIBRARIES})
+endif ()
+
+if (TARGET assimp)
+    target_link_libraries(Raytrace assimp)
 endif ()
 
 target_link_libraries(Raytrace

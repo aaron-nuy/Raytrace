@@ -9,7 +9,8 @@
 enum class ShapeType {
     eNONE = -1,
     eSphere,
-    eBox
+    eBox,
+    eTriangle
 };
 
 struct Hitdata {
@@ -43,11 +44,15 @@ private:
 
     void addRandomBox();
 
+    void addRandomTriangle();
+
     static Hitdata mymin(Hitdata p1, Hitdata p2);
 
     static bool sphereMenu(rtre::Sphere &sphere);
 
     static bool boxMenu(rtre::Box &box);
+
+    static bool triangleMenu(rtre::Triangle &triangle);
 
     static glm::mat4 getCameraMatrix(const rtre::Camera &c);
 
@@ -76,7 +81,7 @@ private:
 
     Hitdata m_SelectedShape = {-1.0f, 0xffffffff, ShapeType::eNONE};
 
-    float m_Speed = 50.0f; // Multiplied by some factor in original code
+    float m_Speed = 20.0f; // Multiplied by some factor in original code
     int m_Bounces = 2;
     float m_MyTime = 0.0f;
     double m_StartTime = 0.0;
@@ -84,9 +89,11 @@ private:
     rtre::Ubo m_SceneUBO;
     rtre::Ssbo m_SphereSSBO;
     rtre::Ssbo m_BoxSSBO;
+    rtre::Ssbo m_TriangleSSBO;
 
     bool m_SpheresDirty = true;
     bool m_BoxesDirty = true;
+    bool m_TrianglesDirty = true;
 
     bool m_ShowControlPanel = true;
     bool m_ShowObjectList = true;

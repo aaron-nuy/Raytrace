@@ -2535,9 +2535,10 @@ STBTT_DEF void stbtt_GetGlyphHMetrics(const stbtt_fontinfo *info, int glyph_inde
     } else
     {
         if (advanceWidth) *advanceWidth = ttSHORT(info->data + info->hmtx + 4 * (numOfLongHorMetrics - 1));
-        if (leftSideBearing) *leftSideBearing = ttSHORT(
-                                 info->data + info->hmtx + 4 * numOfLongHorMetrics + 2 * (
-                                     glyph_index - numOfLongHorMetrics));
+        if (leftSideBearing)
+            *leftSideBearing = ttSHORT(
+                info->data + info->hmtx + 4 * numOfLongHorMetrics + 2 * (
+                    glyph_index - numOfLongHorMetrics));
     }
 }
 

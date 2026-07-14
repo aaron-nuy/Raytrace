@@ -978,6 +978,7 @@ static unsigned int stbiw__zhash(unsigned char *data)
 STBIWDEF unsigned char *stbi_zlib_compress(unsigned char *data, int data_len, int *out_len, int quality)
 {
 
+
 #ifdef STBIW_ZLIB_COMPRESS
 // user provided a zlib compress implementation, use that
 return STBIW_ZLIB_COMPRESS(data, data_len, out_len, quality);
@@ -1134,6 +1135,7 @@ STBIW_MEMMOVE (stbiw__sbraw(out), out, *out_len);
 static unsigned int stbiw__crc32(unsigned char *buffer, int len)
 {
 
+
 #ifdef STBIW_CRC32
 return STBIW_CRC32(buffer, len);
 #else
@@ -1244,8 +1246,9 @@ static void stbiw__encode_png_line(unsigned char *pixels, int stride_bytes, int 
             break;
         case 3: for (i = n; i < width * n; ++i) line_buffer[i] = z[i] - ((z[i - n] + z[i - signed_stride]) >> 1);
             break;
-        case 4: for (i = n; i < width * n; ++i) line_buffer[i] = z[i] - stbiw__paeth(z[i - n], z[i - signed_stride],
-                                                                     z[i - signed_stride - n]);
+        case 4: for (i = n; i < width * n; ++i)
+                line_buffer[i] = z[i] - stbiw__paeth(z[i - n], z[i - signed_stride],
+                                                     z[i - signed_stride - n]);
             break;
         case 5: for (i = n; i < width * n; ++i) line_buffer[i] = z[i] - (z[i - n] >> 1);
             break;

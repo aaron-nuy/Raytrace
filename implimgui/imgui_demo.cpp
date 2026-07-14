@@ -102,7 +102,9 @@ Index of this file:
 #pragma warning (disable: 4127)     // condition expression is constant
 #pragma warning (disable: 4996)     // 'This function or variable may be unsafe': strcpy, strdup, sprintf, vsnprintf, sscanf, fopen
 
+
 #pragma warning (disable: 26451)    // [Static Analyzer] Arithmetic overflow : Using operator 'xxx' on a 4 byte value and then casting the result to an 8 byte value. Cast the value to the wider type before calling operator 'xxx' to avoid overflow(io.2).
+
 
 #endif
 
@@ -111,37 +113,51 @@ Index of this file:
 #if __has_warning("-Wunknown-warning-option")
 #pragma clang diagnostic ignored "-Wunknown-warning-option"         // warning: unknown warning group 'xxx'                     // not all warnings are known by all Clang versions and they tend to be rename-happy.. so ignoring warnings triggers new warnings on some configuration. Great!
 
+
 #endif
 #pragma clang diagnostic ignored "-Wunknown-pragmas"                // warning: unknown warning group 'xxx'
 #pragma clang diagnostic ignored "-Wold-style-cast"                 // warning: use of old-style cast                           // yes, they are more terse.
 
+
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"        // warning: 'xx' is deprecated: The POSIX name for this..   // for strdup used in demo code (so user can copy & paste the code)
 
+
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"       // warning: cast to 'void *' from smaller integer type
+
 
 #pragma clang diagnostic ignored "-Wformat-security"                // warning: format string is not a string literal
 #pragma clang diagnostic ignored "-Wexit-time-destructors"          // warning: declaration requires an exit-time destructor    // exit-time destruction order is undefined. if MemFree() leads to users code that has been disabled before exit it might cause problems. ImGui coding style welcomes static/globals.
 
+
 #pragma clang diagnostic ignored "-Wunused-macros"                  // warning: macro is not used                               // we define snprintf/vsnprintf on Windows so they are available, but not always used.
+
 
 #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"  // warning: zero as null pointer constant                   // some standard header variations use #define NULL 0
 
+
 #pragma clang diagnostic ignored "-Wdouble-promotion"               // warning: implicit conversion from 'float' to 'double' when passing argument to function  // using printf() is a misery with this as C++ va_arg ellipsis changes float to double.
+
 
 #pragma clang diagnostic ignored "-Wreserved-id-macro"              // warning: macro name is a reserved identifier
 #pragma clang diagnostic ignored "-Wimplicit-int-float-conversion"  // warning: implicit conversion from 'xxx' to 'float' may lose precision
 
+
 #elif defined(__GNUC__)
 #pragma GCC diagnostic ignored "-Wpragmas"                  // warning: unknown option after '#pragma GCC diagnostic' kind
+
 
 #pragma GCC diagnostic ignored "-Wint-to-pointer-cast"      // warning: cast to pointer from integer of different size
 #pragma GCC diagnostic ignored "-Wformat-security"          // warning: format string is not a string literal (potentially insecure)
 
+
 #pragma GCC diagnostic ignored "-Wdouble-promotion"         // warning: implicit conversion from 'float' to 'double' when passing argument to function
+
 
 #pragma GCC diagnostic ignored "-Wconversion"               // warning: conversion to 'xxxx' from 'xxxx' may alter its value
 
+
 #pragma GCC diagnostic ignored "-Wmisleading-indentation"   // [__GNUC__ >= 6] warning: this 'if' clause does not guard this statement      // GCC 6.0+ only. See #883 on GitHub.
+
 
 #endif
 
@@ -6237,23 +6253,26 @@ static void ShowDemoWindowInputs()
 
             int count = IM_ARRAYSIZE(io.MouseDown);
             ImGui::Text("Mouse down:");
-            for (int i = 0; i < count; i++) if (ImGui::IsMouseDown(i))
-            {
-                ImGui::SameLine();
-                ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
-            }
+            for (int i = 0; i < count; i++)
+                if (ImGui::IsMouseDown(i))
+                {
+                    ImGui::SameLine();
+                    ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]);
+                }
             ImGui::Text("Mouse clicked:");
-            for (int i = 0; i < count; i++) if (ImGui::IsMouseClicked(i))
-            {
-                ImGui::SameLine();
-                ImGui::Text("b%d (%d)", i, ImGui::GetMouseClickedCount(i));
-            }
+            for (int i = 0; i < count; i++)
+                if (ImGui::IsMouseClicked(i))
+                {
+                    ImGui::SameLine();
+                    ImGui::Text("b%d (%d)", i, ImGui::GetMouseClickedCount(i));
+                }
             ImGui::Text("Mouse released:");
-            for (int i = 0; i < count; i++) if (ImGui::IsMouseReleased(i))
-            {
-                ImGui::SameLine();
-                ImGui::Text("b%d", i);
-            }
+            for (int i = 0; i < count; i++)
+                if (ImGui::IsMouseReleased(i))
+                {
+                    ImGui::SameLine();
+                    ImGui::Text("b%d", i);
+                }
             ImGui::Text("Mouse wheel: %.1f", io.MouseWheel);
             ImGui::Text("Pen Pressure: %.1f", io.PenPressure); // Note: currently unused
             ImGui::TreePop();
@@ -6669,8 +6688,9 @@ void ImGui::ShowAboutWindow(bool *p_open)
         if (io.ConfigInputTextCursorBlink) ImGui::Text("io.ConfigInputTextCursorBlink");
         if (io.ConfigWindowsResizeFromEdges) ImGui::Text("io.ConfigWindowsResizeFromEdges");
         if (io.ConfigWindowsMoveFromTitleBarOnly) ImGui::Text("io.ConfigWindowsMoveFromTitleBarOnly");
-        if (io.ConfigMemoryCompactTimer >= 0.0f) ImGui::Text("io.ConfigMemoryCompactTimer = %.1f",
-                                                             io.ConfigMemoryCompactTimer);
+        if (io.ConfigMemoryCompactTimer >= 0.0f)
+            ImGui::Text("io.ConfigMemoryCompactTimer = %.1f",
+                        io.ConfigMemoryCompactTimer);
         ImGui::Text("io.BackendFlags: 0x%08X", io.BackendFlags);
         if (io.BackendFlags & ImGuiBackendFlags_HasGamepad) ImGui::Text(" HasGamepad");
         if (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) ImGui::Text(" HasMouseCursors");
@@ -7314,6 +7334,7 @@ struct ExampleAppConsole {
     void AddLog(const char *fmt, ...) IM_FMTARGS
 
     (
+    
     2
     )
     {
@@ -7664,6 +7685,7 @@ struct ExampleAppLog {
     void AddLog(const char *fmt, ...) IM_FMTARGS
 
     (
+    
     2
     )
     {
@@ -8111,13 +8133,16 @@ static void ShowExampleAppConstrainedResize(bool *p_open)
     if (type == 3) ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1)); // Horizontal only
     if (type == 4) ImGui::SetNextWindowSizeConstraints(ImVec2(400, -1), ImVec2(500, -1));
     // Width Between and 400 and 500
-    if (type == 5) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX),
-                                                       CustomConstraints::AspectRatio,
-                                                       (void *) &aspect_ratio); // Aspect ratio
-    if (type == 6) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX),
-                                                       CustomConstraints::Square); // Always Square
-    if (type == 7) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX), CustomConstraints::Step,
-                                                       (void *) &fixed_step); // Fixed Step
+    if (type == 5)
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX),
+                                            CustomConstraints::AspectRatio,
+                                            (void *) &aspect_ratio); // Aspect ratio
+    if (type == 6)
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX),
+                                            CustomConstraints::Square); // Always Square
+    if (type == 7)
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(FLT_MAX, FLT_MAX), CustomConstraints::Step,
+                                            (void *) &fixed_step); // Fixed Step
 
     // Submit window
     if (!window_padding)

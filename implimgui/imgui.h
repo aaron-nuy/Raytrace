@@ -82,12 +82,16 @@ Index of this file:
 #include <assert.h>
 #define IM_ASSERT(_EXPR)            assert(_EXPR)                               // You can override the default assert handler by editing imconfig.h
 
+
 #endif
 #define IM_ARRAYSIZE(_ARR)          ((int)(sizeof(_ARR) / sizeof(*(_ARR))))     // Size of a static C-style array. Don't use on pointers!
 
+
 #define IM_UNUSED(_VAR)             ((void)(_VAR))                              // Used to silence "unused variable warnings". Often useful as asserts may be stripped out from final builds.
 
+
 #define IM_OFFSETOF(_TYPE,_MEMBER)  offsetof(_TYPE, _MEMBER)                    // Offset of _MEMBER within _TYPE. Standardized as offsetof() in C++11
+
 
 #define IMGUI_CHECKVERSION()        ImGui::DebugCheckVersionAndDataLayout(IMGUI_VERSION, sizeof(ImGuiIO), sizeof(ImGuiStyle), sizeof(ImVec2), sizeof(ImVec4), sizeof(ImDrawVert), sizeof(ImDrawIdx))
 
@@ -117,6 +121,7 @@ Index of this file:
 #pragma warning (push)
 #pragma warning (disable: 26495)    // [Static Analyzer] Variable 'XXX' is uninitialized. Always initialize a member variable (type.6).
 
+
 #endif
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -128,6 +133,7 @@ Index of this file:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpragmas"          // warning: unknown option after '#pragma GCC diagnostic' kind
 #pragma GCC diagnostic ignored "-Wclass-memaccess"  // [__GNUC__ >= 8] warning: 'memset/memcpy' clearing/writing an object of type 'xxxx' with no trivial copy-assignment; use assignment or value-initialization instead
+
 
 #endif
 
@@ -262,6 +268,7 @@ typedef unsigned short ImWchar16;
 typedef unsigned int ImWchar32;
 // A single decoded U32 character/code point. We encode them as multi bytes UTF-8 when used in strings.
 #ifdef IMGUI_USE_WCHAR32            // ImWchar [configurable type: override in imconfig.h with '#define IMGUI_USE_WCHAR32' to support Unicode planes 1-16]
+
 
 typedef ImWchar32 ImWchar;
 #else
@@ -947,8 +954,10 @@ namespace ImGui {
     IMGUI_API bool TreeNodeEx(const char *str_id, ImGuiTreeNodeFlags flags, const char *fmt, ...) IM_FMTARGS(3);
     IMGUI_API bool TreeNodeEx(const void *ptr_id, ImGuiTreeNodeFlags flags, const char *fmt, ...) IM_FMTARGS(3);
     IMGUI_API bool TreeNodeExV(const char *str_id, ImGuiTreeNodeFlags flags, const char *fmt, va_list args)
+
     IM_FMTLIST(3);
     IMGUI_API bool TreeNodeExV(const void *ptr_id, ImGuiTreeNodeFlags flags, const char *fmt, va_list args)
+
     IM_FMTLIST(3);
     IMGUI_API void TreePush(const char *str_id);
 
@@ -1951,6 +1960,7 @@ enum ImGuiDragDropFlags_ {
 // Standard Drag and Drop payload types. You can define you own payload types using short strings. Types starting with '_' are defined by Dear ImGui.
 #define IMGUI_PAYLOAD_TYPE_COLOR_3F     "_COL3F"    // float[3]: Standard type for colors, without alpha. User code may use this type.
 
+
 #define IMGUI_PAYLOAD_TYPE_COLOR_4F     "_COL4F"    // float[4]: Standard type for colors. User code may use this type.
 
 // A primary data type
@@ -2687,8 +2697,9 @@ struct ImVector {
     {
         T *data = Data;
         const T *data_end = Data + Size;
-        while (data < data_end) if (*data == v) break;
-        else ++data;
+        while (data < data_end)
+            if (*data == v) break;
+            else ++data;
         return data;
     }
 
@@ -2696,8 +2707,9 @@ struct ImVector {
     {
         const T *data = Data;
         const T *data_end = Data + Size;
-        while (data < data_end) if (*data == v) break;
-        else ++data;
+        while (data < data_end)
+            if (*data == v) break;
+            else ++data;
         return data;
     }
 

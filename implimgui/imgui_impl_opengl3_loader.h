@@ -684,6 +684,7 @@ GL3W_API extern union GL3WProcs imgl3wProcs;
 #ifdef __cplusplus
 extern "C" {
 
+
 #endif
 
 #include <stdlib.h>

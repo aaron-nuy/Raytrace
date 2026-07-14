@@ -78,7 +78,9 @@
 #define GLFW_VERSION_COMBINED           (GLFW_VERSION_MAJOR * 1000 + GLFW_VERSION_MINOR * 100 + GLFW_VERSION_REVISION)
 #ifdef GLFW_RESIZE_NESW_CURSOR          // Let's be nice to people who pulled GLFW between 2019-04-16 (3.4 define) and 2019-11-29 (cursors defines) // FIXME: Remove when GLFW 3.4 is released?
 
+
 #define GLFW_HAS_NEW_CURSORS            (GLFW_VERSION_COMBINED >= 3400) // 3.4+ GLFW_RESIZE_ALL_CURSOR, GLFW_RESIZE_NESW_CURSOR, GLFW_RESIZE_NWSE_CURSOR, GLFW_NOT_ALLOWED_CURSOR
+
 
 #else
 #define GLFW_HAS_NEW_CURSORS            (0)
@@ -312,7 +314,7 @@ static int ImGui_ImplGlfw_TranslateUntranslatedKey(int key, int scancode)
 #if (GLFW_VERSION_COMBINED >= 3300) // Eat errors (see #5908)
     (void) glfwGetError(NULL);
 #endif
-    if (key_name &&key_name[0]!= 0 && key_name[1] == 0)
+    if (key_name && key_name[0] != 0 && key_name[1] == 0)
     {
         const char char_names[] = "`-=[]\\,;\'./";
         const int char_keys[] = {

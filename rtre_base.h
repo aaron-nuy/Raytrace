@@ -28,6 +28,7 @@ namespace rtre {
     inline const GLuint skyboxUnit = 0;
     inline std::vector<rtre::Sphere *> sphereList;
     inline std::vector<rtre::Box *> boxList;
+    inline std::vector<rtre::Triangle *> triangleList;
 
     inline std::array<std::string, 6> cubemap = {
         PROJECT_ROOT "skybox/right.png",

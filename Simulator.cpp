@@ -3,7 +3,6 @@
 #include <ctime>
 #include <algorithm>
 
-// Static callback for 'F' key to toggle cursor mode
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_F && action == GLFW_PRESS)
@@ -50,7 +49,7 @@ void Simulator::init(rtre::Window &window)
 
     // Load Shaders
     m_PathTraceShader = std::make_shared<rtre::RenderShader>(
-        PROJECT_ROOT "engine_resources/vert.vert", PROJECT_ROOT "engine_resources/frag.frag", "");
+        PROJECT_ROOT "engine_resources/main.vert", PROJECT_ROOT "engine_resources/frag.frag", "");
     m_PathTraceQuad = std::make_unique<rtre::Quad>(m_PathTraceShader);
 
     m_DisplayShader = std::make_shared<rtre::RenderShader>(
@@ -62,8 +61,9 @@ void Simulator::init(rtre::Window &window)
 
     // Initial scene
     srand(time(0));
-    for (int i = 0; i < 10; i++) addRandomSphere();
-    for (int i = 0; i < 10; i++) addRandomBox();
+    for (int i = 0; i < 1; i++) addRandomSphere();
+    for (int i = 0; i < 1; i++) addRandomBox();
+    for (int i = 0; i < 10; i++) addRandomTriangle();
 
     m_StartTime = glfwGetTime();
 
@@ -107,6 +107,28 @@ void Simulator::addRandomBox()
     m_BoxesDirty = true;
     resetAccumulation();
 }
+
+
+void Simulator::addRandomTriangle()
+{
+    glm::vec3 base(my_random() * 10, my_random() * 10, my_random() * 10);
+    rtre::triangleList.emplace_back(
+        new rtre::Triangle(
+            base,
+            base + glm::vec3(my_random() * 2, my_random() * 2, my_random() * 2),
+            base + glm::vec3(my_random() * 2, my_random() * 2, my_random() * 2),
+            rtre::Material(
+                glm::vec3(my_random(), my_random(), my_random()),
+                my_random(),
+                my_random(),
+                0.0f,
+                my_random())
+        )
+    );
+    m_TrianglesDirty = true;
+    resetAccumulation();
+}
+
 
 void Simulator::resetAccumulation()
 {
@@ -198,6 +220,10 @@ void Simulator::handleInput()
         {
             data = mymin(data, Hitdata{rtre::boxList[i]->intersect(ray), i, ShapeType::eBox});
         }
+        for (uint32_t i = 0; i < rtre::triangleList.size(); i++)
+        {
+            data = mymin(data, Hitdata{rtre::triangleList[i]->intersect(ray), i, ShapeType::eTriangle});
+        }
 
         if (data.distance > 0.0)
         {
@@ -213,7 +239,6 @@ void Simulator::render()
     float aspect = (float) w / h;
     glm::mat4 pmatrix = getCameraMatrix(rtre::camera);
 
-    // Update Scene UBO
     rtre::SceneData sceneData;
     sceneData.viewInverse = pmatrix;
     sceneData.cameraPos = glm::vec4(rtre::camera.position(), 1.0f);
@@ -223,12 +248,12 @@ void Simulator::render()
     sceneData.bounces = m_Bounces;
     sceneData.sphereNum = (uint32_t) rtre::sphereList.size();
     sceneData.boxNum = (uint32_t) rtre::boxList.size();
+    sceneData.triangleNum = (uint32_t) rtre::triangleList.size();
     sceneData.state = (uint32_t) rand();
     sceneData.reset = m_Reset ? 1 : 0;
     m_SceneUBO.loadData(sceneData);
     m_SceneUBO.bindBase(0);
 
-    // Update Sphere SSBO if dirty
     if (m_SpheresDirty)
     {
         std::vector<rtre::GPUSphere> gpuSpheres;
@@ -270,7 +295,28 @@ void Simulator::render()
     }
     m_BoxSSBO.bindBase(2);
 
-    // 1. Path Tracing Pass
+    if (m_TrianglesDirty)
+    {
+        std::vector<rtre::GPUTriangle> gpuTriangles;
+        for (auto t: rtre::triangleList)
+        {
+            rtre::GPUTriangle gt;
+            gt.p1 = t->points[0];
+            gt.p2 = t->points[1];
+            gt.p3 = t->points[2];
+            gt.material.albedo = t->material.albedo;
+            gt.material.roughness = t->material.roughness;
+            gt.material.metalic = t->material.metalic;
+            gt.material.emissive = t->material.emissive;
+            gt.material.specular = t->material.specular;
+            gpuTriangles.push_back(gt);
+        }
+        m_TriangleSSBO.loadData(gpuTriangles);
+        m_TrianglesDirty = false;
+    }
+    m_TriangleSSBO.bindBase(3);
+
+
     m_CurrentTexture = 1 - m_CurrentTexture;
     glBindFramebuffer(GL_FRAMEBUFFER, m_PathTracerFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_PathTracerTextures[m_CurrentTexture],
@@ -286,7 +332,6 @@ void Simulator::render()
     rtre::skyBox->bind();
     m_PathTraceQuad->draw();
 
-    // 2. Display Pass
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     m_DisplayShader->activate();
     m_DisplayShader->SetUniform("aspec", aspect);
@@ -299,7 +344,6 @@ void Simulator::render()
 
     m_DisplayQuad->draw();
 
-    // 3. UI Pass
     renderUI();
 
     m_Window->swapBuffers();
@@ -322,7 +366,7 @@ void Simulator::renderUI()
         {
             ImGui::SliderFloat("Camera Speed", &m_Speed, 1.0f, 200.0f, "%.1f");
 
-            if (ImGui::SliderInt("Max Bounces", &m_Bounces, 0, 50))
+            if (ImGui::SliderInt("Max Bounces", &m_Bounces, 1, 25))
             {
                 resetAccumulation();
             }
@@ -340,6 +384,8 @@ void Simulator::renderUI()
             if (ImGui::Button("Add Random Sphere")) addRandomSphere();
             ImGui::SameLine();
             if (ImGui::Button("Add Random Box")) addRandomBox();
+            ImGui::SameLine();
+            if (ImGui::Button("Add Random Triangle")) addRandomTriangle();
 
             if (ImGui::TreeNode("Spheres"))
             {
@@ -368,6 +414,20 @@ void Simulator::renderUI()
                 }
                 ImGui::TreePop();
             }
+
+            if (ImGui::TreeNode("Triangles"))
+            {
+                for (uint32_t i = 0; i < rtre::triangleList.size(); i++)
+                {
+                    std::string label = "Triangle " + std::to_string(i);
+                    if (ImGui::Selectable(label.c_str(),
+                                          m_SelectedShape.type == ShapeType::eTriangle && m_SelectedShape.index == i))
+                    {
+                        m_SelectedShape = {1.0f, i, ShapeType::eTriangle};
+                    }
+                }
+                ImGui::TreePop();
+            }
         }
 
         if (m_SelectedShape.distance > 0.0)
@@ -388,7 +448,15 @@ void Simulator::renderUI()
                         m_BoxesDirty = true;
                         resetAccumulation();
                     }
+                } else if (m_SelectedShape.type == ShapeType::eTriangle && m_SelectedShape.index < rtre::triangleList.size())
+                {
+                    if (triangleMenu(*rtre::triangleList[m_SelectedShape.index]))
+                    {
+                        m_TrianglesDirty = true;
+                        resetAccumulation();
+                    }
                 }
+
 
                 if (ImGui::Button("Delete Object"))
                 {
@@ -402,6 +470,12 @@ void Simulator::renderUI()
                         delete rtre::boxList[m_SelectedShape.index];
                         rtre::boxList.erase(rtre::boxList.begin() + m_SelectedShape.index);
                         m_BoxesDirty = true;
+                    }
+                    else if (m_SelectedShape.type == ShapeType::eTriangle)
+                    {
+                        delete rtre::triangleList[m_SelectedShape.index];
+                        rtre::triangleList.erase(rtre::triangleList.begin() + m_SelectedShape.index);
+                        m_TrianglesDirty = true;
                     }
                     m_SelectedShape = {-1.0f, 0xffffffff, ShapeType::eNONE};
                     resetAccumulation();
@@ -448,6 +522,21 @@ bool Simulator::boxMenu(rtre::Box &box)
     changed |= ImGui::SliderFloat("Metalic", &box.material.metalic, 0.0f, 1.0f);
     changed |= ImGui::SliderFloat("Emissive", &box.material.emissive, 0.0f, 1.0f);
     changed |= ImGui::SliderFloat("Specular", &box.material.specular, 0.0f, 1.0f);
+    return changed;
+}
+
+bool Simulator::triangleMenu(rtre::Triangle &triangle)
+{
+    bool changed = false;
+    changed |= ImGui::DragFloat3("P1", (float *) &triangle.points[0], 0.1f, 0.1f, 10.0f);
+    changed |= ImGui::DragFloat3("P2", (float *) &triangle.points[1], 0.1f, 0.1f, 10.0f);
+    changed |= ImGui::DragFloat3("P3", (float *) &triangle.points[2], 0.1f, 0.1f, 10.0f);
+    ImGui::Separator();
+    changed |= ImGui::ColorEdit3("Albedo", (float *) &triangle.material.albedo);
+    changed |= ImGui::SliderFloat("Roughness", &triangle.material.roughness, 0.0f, 1.0f);
+    changed |= ImGui::SliderFloat("Metalic", &triangle.material.metalic, 0.0f, 1.0f);
+    changed |= ImGui::SliderFloat("Emissive", &triangle.material.emissive, 0.0f, 1.0f);
+    changed |= ImGui::SliderFloat("Specular", &triangle.material.specular, 0.0f, 1.0f);
     return changed;
 }
 

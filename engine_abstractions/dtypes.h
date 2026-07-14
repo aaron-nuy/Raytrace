@@ -39,6 +39,13 @@ namespace rtre {
         GPUMaterial material;
     };
 
+    struct GPUTriangle {
+        alignas(16) vec3 p1;
+        alignas(16) vec3 p2;
+        alignas(16) vec3 p3;
+        GPUMaterial material;
+    };
+
     struct SceneData {
         mat4 viewInverse;
         vec4 cameraPos;
@@ -48,6 +55,7 @@ namespace rtre {
         int bounces;
         uint32_t sphereNum;
         uint32_t boxNum;
+        uint32_t triangleNum;
         uint32_t state;
         int reset;
     };
@@ -68,11 +76,9 @@ namespace rtre {
         /*
 			Returns -1.f if no intersections
 		*/
-        vec3 position;
         Material material;
 
-        Shape(vec3 pos, Material mat) : position(pos),
-                                        material(mat)
+        Shape(Material mat) : material(mat)
         {
         }
 
@@ -81,8 +87,10 @@ namespace rtre {
 
     struct Sphere : public Shape {
         GLfloat radius;
+        vec3 position;
 
-        Sphere(vec3 pos, GLfloat rad, Material mat) : Shape(pos, mat),
+        Sphere(vec3 pos, GLfloat rad, Material mat) : Shape(mat),
+                                                      position(pos),
                                                       radius(rad)
         {
         }
@@ -111,8 +119,10 @@ namespace rtre {
     struct Box : public Shape {
     public:
         vec3 dimensions;
+        vec3 position;
 
-        Box(vec3 pos, vec3 dimens, Material mat) : Shape(pos, mat),
+        Box(vec3 pos, vec3 dimens, Material mat) : Shape(mat),
+                                                   position(pos),
                                                    dimensions(dimens)
         {
         }
@@ -139,6 +149,55 @@ namespace rtre {
         }
     };
 
+    struct Triangle : public Shape {
+        vec3 points[3];
+
+        Triangle(const vec3& p1, const vec3& p2, const vec3& p3, Material mat)
+            : Shape(mat), points{p1, p2, p3} {}
+
+        Triangle(const vec3 (&p)[3], Material mat)
+            : Shape(mat), points{p[0], p[1], p[2]} {}
+
+
+        GLfloat intersect(const Ray &ray) override
+        {
+            const float EPSILON = 0.0000001f;
+
+            glm::vec3 v0 = points[0];
+            glm::vec3 v1 = points[1];
+            glm::vec3 v2 = points[2];
+
+            glm::vec3 edge1 = v1 - v0;
+            glm::vec3 edge2 = v2 - v0;
+
+            glm::vec3 h = glm::cross(ray.direction, edge2);
+            float a = glm::dot(edge1, h);
+
+            if (a > -EPSILON && a < EPSILON)
+                return -1.0f;
+
+            float f = 1.0f / a;
+            glm::vec3 s = ray.origin - v0;
+            float u = f * glm::dot(s, h);
+
+            if (u < 0.0f || u > 1.0f)
+                return -1.0f;
+
+            glm::vec3 q = glm::cross(s, edge1);
+            float v = f * glm::dot(ray.direction, q);
+
+            if (v < 0.0f || u + v > 1.0f)
+                return -1.0f;
+
+            float t = f * glm::dot(edge2, q);
+
+            if (t > EPSILON)
+                return t;
+
+            return -1.0f;
+        }
+
+    };
 
     class PointLight {
     public:

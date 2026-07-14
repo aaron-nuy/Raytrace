@@ -274,7 +274,7 @@ namespace rtre {
 
             std::string vertexSource = get_file_contents(vertexFile);
             std::string fragSource = get_file_contents(fragmentFile);
-            // Read vertexFile and fragmentFile and store the strings
+
             vertexCode = vertexSource.c_str();
             fragmentCode = fragSource.c_str();
 
